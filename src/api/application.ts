@@ -3,6 +3,8 @@ import { ExpressServer } from '@api/server';
 import { DatabaseAdapter } from '@common/infrastructure/database.adapter';
 import { RedisAdapter } from '@common/infrastructure/redis.adapter';
 import logger from '@common/logger';
+import { UserEvent } from '@common/user/user.event';
+import { TrackingEvent } from '@common/tracking/tracking.event';
 
 /**
  * Wrapper around the Node process, ExpressServer abstraction and complex dependencies such as services that ExpressServer needs.
@@ -15,6 +17,8 @@ export class Application {
     public static async createApplication(): Promise<ExpressServer> {
         await DatabaseAdapter.connect();
         await RedisAdapter.connect();
+
+        Application.registerEvents();
 
         const expressServer = new ExpressServer();
         await expressServer.setup(PORT);
@@ -69,5 +73,11 @@ export class Application {
                 logger.error('Error during shutdown', err);
                 process.exit(1);
             });
+    }
+
+    private static registerEvents() {
+        // register event
+        UserEvent.register();
+        TrackingEvent.register();
     }
 }

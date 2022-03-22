@@ -2,6 +2,8 @@ import { Job, DoneCallback, Queue } from 'bull';
 import { JOB_SAMPLE_REPEATER as JOB_NAME } from '@config/jobs';
 import logger from '@common/logger';
 import { QueueService } from '@common/queue/queue.service';
+import { ICreateSampleRequest } from '@common/sample/sample.request';
+import { SampleService } from '@common/sample/sample.service';
 
 export class SampleRepeaterJob {
     static async register(): Promise<Queue<unknown>> {
@@ -26,6 +28,8 @@ export class SampleRepeaterJob {
 
             // Make some noise
             logger.info("I'm repeater");
+            const data: ICreateSampleRequest = { title: 'test', content: 'test content' };
+            await SampleService.create(data);
 
             logger.debug(`Processed job ${JOB_NAME}-${job.id}`);
             done();

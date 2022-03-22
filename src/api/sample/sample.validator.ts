@@ -5,3 +5,10 @@ export const list: schema = {
         limit: Joi.number().integer().min(1).max(100).default(10),
     }),
 };
+
+export const create: schema = {
+    body: Joi.object({
+        title: Joi.string().required(),
+        content: Joi.string().required(),
+    }),
+};
